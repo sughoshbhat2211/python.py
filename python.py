@@ -1,59 +1,23 @@
-!pip install qrcode[pil]
-
 import qrcode
-from IPython.display import display
-import ipywidgets as widgets
-from IPython.display import clear_output
+from matplotlib import pyplot as plt
+from urllib.parse import quote
 
-# Input box
-text_box = widgets.Text(
-    value='https://www.google.com',
-    description='Link:',
-    layout=widgets.Layout(width='500px')
-)
+upi_id = "8660972945@ptsbi"
+name = "Sughosh"
+amount = "10000"
 
-# Button
-button = widgets.Button(
-    description='Generate QR',
-    button_style='success'
-)
+# Encode name properly
+name = quote(name)
 
-# Output area
-output = widgets.Output()
+# Create UPI payment link
+upi_link = f"upi://pay?pa={upi_id}&pn={name}&am={amount}&cu=INR"
 
-# Function
-def generate_qr(b):
+print(upi_link)
 
-    with output:
+# Generate QR code
+img = qrcode.make(upi_link)
 
-        clear_output()
-
-        # Get input value
-        data = text_box.value
-
-        # Create QR
-        qr = qrcode.QRCode(
-            version=4,
-            box_size=10,
-            border=5
-        )
-
-        qr.add_data(data)
-        qr.make(fit=True)
-
-        img = qr.make_image(
-            fill_color="black",
-            back_color="white"
-        )
-
-        img.save("website_qr.png")
-
-        display(img)
-
-# Button click event
-button.on_click(generate_qr)
-
-# Show UI
-display(text_box)
-display(button)
-display(output)
+# Display QR
+plt.imshow(img)
+plt.axis("off")
+plt.show()
